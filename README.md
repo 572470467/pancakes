@@ -1,1 +1,1 @@
-# pancakes
+# Kompline Pancake Maker
