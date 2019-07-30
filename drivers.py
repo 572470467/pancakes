@@ -5,54 +5,60 @@ import csv
 import math
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-pin_en0=4
-pin_dir0=17
-pin_pul0=27
-pin_en1=18
-pin_dir1=23
-pin_pul1=24
-GPIO.setup([pin_en0,pin_dir0,pin_pul0,pin_en1,pin_dir1,pin_pul1],GPIO.OUT,initial=0)
 l0 = 280
 l1=l2=l3=l4=230
-class Double_stepper(object):
-    def Step_a():
-        GPIO.output([pin_en0],GPIO.LOW)
-        if dia==0:
-            GPIO.output(pin_dir0,GPIO.LOW)
-        if dia==1:
-            GPIO.output(pin_dir0,GPIO.HIGH)
+class Double_stepper():
+    def __init__(self,pin_en0,pin_dir0,pin_pul0,pin_en1,pin_dir1,pin_pul1):
+        GPIO.setup([pin_en0,pin_dir0,pin_pul0,pin_en1,pin_dir1,pin_pul1],GPIO.OUT,initial=0)
+        self.pin_en0=pin_en0
+        self.pin_dir0=pin_dir0
+        self.pin_pul0=pin_pul0
+        self.pin_en1=pin_en1
+        self.pin_dir1=pin_dir1
+        self.pin_pul1=pin_pul1
+    def Step_a(self):
+        GPIO.output([self.pin_en0],GPIO.LOW)
+        if self.dia==0:
+            GPIO.output(self.pin_dir0,GPIO.LOW)
+        if self.dia==1:
+            GPIO.output(self.pin_dir0,GPIO.HIGH)
         count0=0
-        if nsa==0:
+        if self.nsa==0:
             count0+=0
         else:
-            for v in range(0,nsa):
-                GPIO.output(pin_pul0,GPIO.HIGH)
-                time.sleep(t/nsa)
-                GPIO.output(pin_pul0,GPIO.LOW)
+            for v in range(0,self.nsa):
+                GPIO.output(self.pin_pul0,GPIO.HIGH)
+                time.sleep(self.t/self.nsa)
+                GPIO.output(self.pin_pul0,GPIO.LOW)
                 count0+=1
         with open("data1.csv", "a") as datafile:
             datafile.write("  %d"%count0)
-    def Step_b():
-        GPIO.output([pin_en1],GPIO.LOW)
-        if dib==0:
-            GPIO.output(pin_dir1,GPIO.LOW)
-        if dib==1:
-            GPIO.output(pin_dir1,GPIO.HIGH)
+    def Step_b(self):
+        GPIO.output([self.pin_en1],GPIO.LOW)
+        if self.dib==0:
+            GPIO.output(self.pin_dir1,GPIO.LOW)
+        if self.dib==1:
+            GPIO.output(self.pin_dir1,GPIO.HIGH)
         count1=0
-        if nsb==0:
+        if self.nsb==0:
             count1+=0
         else:
-            for i in range(0,nsb):
-                GPIO.output(pin_pul1,GPIO.HIGH)
-                time.sleep(t/nsb)
-                GPIO.output(pin_pul1,GPIO.LOW)
+            for i in range(0,self.nsb):
+                GPIO.output(self.pin_pul1,GPIO.HIGH)
+                time.sleep(self.t/self.nsb)
+                GPIO.output(self.pin_pul1,GPIO.LOW)
                 count1+=1
         with open("data1.csv", "a") as datafile:
             datafile.write(",  %d\n"%count1)
-    def double_step(nsa,dia,nsb,dib,t):
+    def double_step(self,nsa,dia,nsb,dib,t):
+        self.nsa=nsa
+        self.dia=dia
+        self.nsb=nsb
+        self.dib=dib
+        self.t=t
         threads=[]
-        threads.append(threading.Thread(target=Double_stepper.Step_a))
-        threads.append(threading.Thread(target=Double_stepper.Step_b))
+        threads.append(threading.Thread(target=self.Step_a))
+        threads.append(threading.Thread(target=self.Step_b))
         for t in threads:
             t.start()
 class Button():
