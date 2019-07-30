@@ -297,7 +297,7 @@ if __name__ == '__main__':
     tw = 3; tb = 3;
     ds = Double_stepper(26,19,13,6,5,0)
     bd_xz = Double_stepper(22,27,17,18,15,14)
-    bd_sj = Double_stepper(22,27,17,18,15,14)
+    bd_sj = Double_stepper(22,27,17,11,9,10)
     sj = Stepper(11,9,10)
     bd = Stepper_slow(22,27,17)
     xz = Stepper_slow(18,15,14)
